@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from .models import Room, Message
+
+
 # Create your views here.
 
 
@@ -12,6 +14,7 @@ def home_page(request):
 def pc(request):
     return render(request, 'pc.html')
 
+
 def playstation(request):
     return render(request, 'playstation.html')
 
@@ -20,6 +23,7 @@ def playstation(request):
 
 def home(request):
     return render(request, 'home.html')
+
 
 def room(request, room):
     username = request.GET.get('username')
@@ -30,16 +34,18 @@ def room(request, room):
         'room_details': room_details
     })
 
-def checkview(request):
+
+def check_view(request):
     room = request.POST['room_name']
     username = request.POST['username']
 
     if Room.objects.filter(name=room).exists():
-        return redirect('/'+room+'/?username='+username)
+        return redirect('/' + room + '/?username=' + username)
     else:
         new_room = Room.objects.create(name=room)
         new_room.save()
-        return redirect('/'+room+'/?username='+username)
+        return redirect('/' + room + '/?username=' + username)
+
 
 def send(request):
     message = request.POST['message']
@@ -50,8 +56,8 @@ def send(request):
     new_message.save()
     return HttpResponse('Message sent successfully')
 
-def getMessages(request, room):
-    room_details = Room.objects.get(name=room)
 
+def get_messages(request, room):
+    room_details = Room.objects.get(name=room)
     messages = Message.objects.filter(room=room_details.id)
-    return JsonResponse({"messages":list(messages.values())})
+    return JsonResponse({"messages": list(messages.values())})
